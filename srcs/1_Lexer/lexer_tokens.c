@@ -69,22 +69,41 @@ int	ft_isspace(char c)
 char	*read_word_between_quotes(t_data *data, char quote)
 {
 	char	buffer[1024];
-	int	buf_pos;
+	char	*tmp;
+	int		buf_pos;
+	int		i;
 
 	buf_pos = 0;
 	data->pos++;
 	while (data->line[data->pos] && data->line[data->pos] != quote && buf_pos < 1023)
 	{
-		buffer[buf_pos] = data->line[data->pos];
-		data->pos++;
-		buf_pos++;
+		if (quote == '"' && data->line[data->pos] == '$')
+		{
+			data->pos++;
+			tmp = expand_variable(data->line, &data->pos);
+			if (!tmp)
+				return (NULL);
+			i = 0;
+			while (tmp[i] && buf_pos < 1023)
+			{
+				buffer[buf_pos] = tmp[i];
+				buf_pos++;
+				i++;
+			}
+			free(tmp);
+		}
+		else
+		{
+			buffer[buf_pos] = data->line[data->pos];
+			data->pos++;
+			buf_pos++;
+		}
 	}
 	if (data->line[data->pos] == quote)
 		data->pos++;
 	else
 		{
-			errno = EINVAL;
-			printf("Error: quote %c not closed: %s\n", quote, strerror(errno));
+			printf("syntax error: unclosed quote %c\n", quote);
 			return (NULL);
 		}
 	buffer[buf_pos] = '\0';
@@ -94,7 +113,9 @@ char	*read_word_between_quotes(t_data *data, char quote)
 char	*read_normal_word(t_data *data)
 {
 	char	buffer[1024];
-	int	buf_pos;
+	int		buf_pos;
+	char	*tmp;
+	int		i;
 
 	buf_pos = 0;
 	while (data->line[data->pos]
@@ -102,16 +123,28 @@ char	*read_normal_word(t_data *data)
 		&& !is_quote(data->line[data->pos])
 		&& !is_operator(data->line[data->pos]))
 	{
-		if (data->line[data->pos] == '\\')
+		if (data->line[data->pos] == '$')
+		{
+			data->pos++;
+			tmp = expand_variable(data->line, &data->pos);
+			if (!tmp)
+				return (NULL);
+			i = 0;
+			while (tmp[i] && buf_pos < 1023)
+			{
+				buffer[buf_pos] = tmp[i];
+				buf_pos++;
+				i++;
+			}
+			free(tmp);
+		}
+		/*if (data->line[data->pos] == '\\')
 		{
 			data->pos++;
 			continue ;
-		}
-		if (buf_pos > 1023)
-			break ;
-		buffer[buf_pos] = data->line[data->pos];
-		data->pos++;
-		buf_pos++;
+		}*/
+		else
+			buffer[buf_pos++] = data->line[data->pos++];
 	}
 	buffer[buf_pos] = '\0';
 	return (ft_strdup(buffer));
@@ -137,8 +170,12 @@ char	*read_word(t_data *data)
 		if (!tmp)
 			return (NULL);
 		i = 0;
-		while (tmp[i])
-			buffer[buf_pos++] = tmp[i++];
+		while (tmp[i] && buf_pos < 1023)
+		{
+			buffer[buf_pos] = tmp[i];
+			buf_pos++;
+			i++;
+		}	
 		free(tmp);
 	}
 	buffer[buf_pos] = '\0';
@@ -155,10 +192,7 @@ t_token	*new_token(t_token_type type, char *value)
 	if (!token)
 		return (NULL);
 	token->type = type;
-	if (value)
-		token->value = ft_strdup(value);
-	else
-		token->value = NULL;
+	token->value = value;
 	token->next = NULL;
 	return (token);
 }
@@ -177,42 +211,58 @@ void	add_token(t_token **head, t_token *new)
 	}
 }
 
+/*void	add_token(t_token **head, t_token *new)
+{
+	t_token	*tmp;
+
+	if (!*head)
+	{
+		*head = new;
+		return ;
+	}
+	tmp = *head;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
+}*/
+
 //**************************************************************//
 
 t_token	*lexer(char *line)
 {
-	t_data	*data;
+	t_data	data;
 	t_token	*tokens;
 	char	*word;
 	t_token_type	type;
 	
-	data = malloc(sizeof(t_data));
-	if (!data)
-		return (NULL);
-	data->line = line;
+	data.line = line;
 	tokens = NULL;
-	data->pos = 0;
+	data.pos = 0;
 
-	while (data->line[data->pos])
+	while (data.line[data.pos])
 	{
-		while (ft_isspace(data->line[data->pos]))
-			data->pos++;
-		if (!data->line[data->pos]) 
+		while (ft_isspace(data.line[data.pos]))
+			data.pos++;
+		if (!data.line[data.pos]) 
 			break ;
-		type = get_operator_type(data);
+		type = get_operator_type(&data);
 		if (type != WORD)
 		{		
 			add_token(&tokens, new_token(type, NULL));
-			data->pos++;
+			data.pos++;
 		}
 		else
 		{
-			word = read_word(data);
+			word = read_word(&data);
+			if (!word)
+			{
+				free_tokens(tokens);
+				return (NULL);
+			}
 			add_token(&tokens, new_token(WORD, word));
-			free(word);
+			//free(word);
 		}
 	}
-	free(data);
 	return (tokens);
 }
 

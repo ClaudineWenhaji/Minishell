@@ -24,7 +24,6 @@
 
 #include <string.h>
 #include <ctype.h>
-#include <errno.h>
 
 extern int g_status;
 
@@ -63,5 +62,7 @@ t_token	*lexer(char *line);
 void	free_tokens(t_token *tokens);
 void	print_tokens(t_token *tokens);
 char	*token_type_str(t_token_type type);
+
+char    *expand_variable(const char *str, int *pos);
 
 #endif
