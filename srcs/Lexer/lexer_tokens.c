@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 15:54:24 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/09 13:31:26 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/09 15:33:39 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,13 @@ char	*read_normal_word(t_data *data)
 		&& !is_quote(data->line[data->pos])
 		&& !is_operator(data->line[data->pos]))
 	{
+		if (data->line[data->pos] == '\\')
+		{
+			data->pos++;
+			continue ;
+		}
+		if (buf_pos > 1023)
+			break ;
 		buffer[buf_pos] = data->line[data->pos];
 		data->pos++;
 		buf_pos++;
