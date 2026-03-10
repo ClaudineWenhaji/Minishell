@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 15:54:24 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/09 15:33:39 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/10 11:22:40 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ t_token_type	get_operator_type(t_data *data)
 	return (WORD);
 }
 
-//************************FONCTIONS SPECIALISEES**************************************//
-
 int	is_operator(char c)
 {
 	return (c == '|' || c == '<' || c == '>');
@@ -60,11 +58,12 @@ int	is_quote(char c)
 	return (c == '\'' || c == '"');
 }
 
-
 int	ft_isspace(char c)
 {
 	return (c == ' ' || c == '\t');
 }
+
+//************************FONCTIONS SPECIALISEES**************************************//
 
 char	*read_word_between_quotes(t_data *data, char quote)
 {
@@ -233,6 +232,7 @@ t_token	*lexer(char *line)
 	t_data	data;
 	t_token	*tokens;
 	char	*word;
+	t_token	*tok;
 	t_token_type	type;
 	
 	data.line = line;
@@ -254,33 +254,20 @@ t_token	*lexer(char *line)
 		else
 		{
 			word = read_word(&data);
-			if (!word)
+			tok = new_token(WORD, word);
+			if (!tok)
 			{
+				free(word);
 				free_tokens(tokens);
 				return (NULL);
 			}
-			add_token(&tokens, new_token(WORD, word));
+			add_token(&tokens, tok);
 			//free(word);
 		}
 	}
 	return (tokens);
 }
 
-//**************************************************************//
-
-void	free_tokens(t_token *tokens)
-{
-	t_token	*tmp;
-
-	while (tokens)
-	{
-		tmp = tokens;
-		tokens = tokens->next;
-		if (tmp->value)
-			free(tmp->value);
-		free(tmp);
-	}
-}
 
 /*
 int	main()
