@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 15:54:24 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/10 11:22:40 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/10 14:28:16 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ t_token	*new_token(t_token_type type, char *value)
 	token->next = NULL;
 	return (token);
 }
-
+/*
 void	add_token(t_token **head, t_token *new)
 {
 	if (!*head)
@@ -208,9 +208,9 @@ void	add_token(t_token **head, t_token *new)
 		new->next = *head;
 		*head = new;
 	}
-}
+}*/
 
-/*void	add_token(t_token **head, t_token *new)
+void	add_token(t_token **head, t_token *new)
 {
 	t_token	*tmp;
 
@@ -223,7 +223,7 @@ void	add_token(t_token **head, t_token *new)
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
-}*/
+}
 
 //**************************************************************//
 

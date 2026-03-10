@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:44:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/03/10 11:17:00 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/10 14:23:20 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,15 @@ typedef struct	s_token
 	struct s_token	*next;
 } t_token;
 
+typedef struct s_cmd
+{
+	char	**args;
+	char	*input_file;
+	char	*output_file;
+	int		append;
+	struct s_cmd *next;
+} t_cmd;
+
 typedef struct	s_data
 {
 	char	*line;
@@ -64,5 +73,11 @@ void	print_tokens(t_token *tokens);
 char	*token_type_str(t_token_type type);
 
 char    *expand_variable(const char *str, int *pos);
+
+char    **add_arg(char **args, char *value);
+t_cmd	*parse_tokens(t_token *tokens);
+void	print_args(char **args);
+void 	print_command(t_cmd *cmd, int index);
+void 	print_commands(t_cmd *cmd_list);
 
 #endif

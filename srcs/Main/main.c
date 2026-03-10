@@ -23,9 +23,14 @@ int main(int argc, char **argv, char **envp)
 		if (*line)
 			add_history(line);
 		tokens = lexer(line);
-		print_tokens(tokens);
-		free_tokens(tokens);
-
+		if (tokens)
+		{
+			print_tokens(tokens);
+			t_cmd *cmd = parse_tokens(tokens);
+			print_commands(cmd);
+		//	execute_commands(cmd);
+			free_tokens(tokens);
+		}
 		free(line);
 	}
 	rl_clear_history();
