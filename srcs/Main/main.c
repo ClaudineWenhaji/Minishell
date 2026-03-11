@@ -26,9 +26,9 @@ int main(int argc, char **argv, char **envp)
 		if (tokens)
 		{
 			print_tokens(tokens);
-			t_cmd *cmd = parse_tokens(tokens);
-			print_commands(cmd);
-		//	execute_commands(cmd);
+			//t_cmd *cmd = parse_tokens(tokens);
+			//print_commands(cmd);
+			//execute_commands(cmd);
 			free_tokens(tokens);
 		}
 		free(line);

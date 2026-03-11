@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:44:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/03/10 14:23:20 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/11 16:37:43 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,62 +22,64 @@
 # include <signal.h>
 # define SIG_ERROR_MSG "Error : fail to catch a signal.\n"
 
-#include <string.h>
-#include <ctype.h>
+# include <string.h>
+# include <ctype.h>
 
-extern int g_status;
+extern int	g_status;
 
 typedef enum e_token_type
 {
 	WORD,
 	PIPE,
-	REDIR_IN,  
-	REDIR_OUT, 
-	APPEND,    
-	HEREDOC,   
-} t_token_type;
+	REDIR_IN,
+	REDIR_OUT,
+	APPEND,
+	HEREDOC,
+}	t_token_type;
 
-typedef struct	s_token
+typedef struct s_token
 {
 	t_token_type	type;
-	char		*value;
+	char			*value;
 	struct s_token	*next;
-} t_token;
+}	t_token;
 
 typedef struct s_cmd
 {
-	char	**args;
-	char	*input_file;
-	char	*output_file;
-	int		append;
-	struct s_cmd *next;
-} t_cmd;
+	char			**args;
+	char			*input_file;
+	char			*output_file;
+	int				append;
+	struct s_cmd	*next;
+}	t_cmd;
 
-typedef struct	s_data
+typedef struct s_data
 {
 	char	*line;
-	int	pos;
-} t_data;
+	int		pos;
+}	t_data;
 
-int    quit_error(char *msg);
+int	quit_error(char *msg);
 
 t_token_type	get_operator_type(t_data *data);
-char	*read_word_between_quotes(t_data *data, char quote);
-char	*read_normal_word(t_data *data);
-char	*read_word(t_data *data);
-t_token	*new_token(t_token_type type, char *value);
-void	add_token(t_token **head, t_token *new);
-t_token	*lexer(char *line);
-void	free_tokens(t_token *tokens);
-void	print_tokens(t_token *tokens);
-char	*token_type_str(t_token_type type);
+char			*read_word_between_quotes(t_data *data, char quote);
+char			*read_normal_word(t_data *data);
+char			*read_word(t_data *data);
+t_token			*new_token(t_token_type type, char *value);
+void			add_token(t_token **head, t_token *new);
+t_token			*lexer(char *line);
+void			free_tokens(t_token *tokens);
+void			print_tokens(t_token *tokens);
+char			*token_type_str(t_token_type type);
 
-char    *expand_variable(const char *str, int *pos);
+char			*expand_variable(const char *str, int *pos);
 
-char    **add_arg(char **args, char *value);
-t_cmd	*parse_tokens(t_token *tokens);
-void	print_args(char **args);
-void 	print_command(t_cmd *cmd, int index);
-void 	print_commands(t_cmd *cmd_list);
+char			**add_arg(char **args, char *value);
+t_cmd			*parse_tokens(t_token *tokens);
+void			print_args(char **args);
+void			print_command(t_cmd *cmd, int index);
+void			print_commands(t_cmd *cmd_list);
+
+int	copy_expanded_var(t_data *data, char *buffer, int *buf_pos);
 
 #endif

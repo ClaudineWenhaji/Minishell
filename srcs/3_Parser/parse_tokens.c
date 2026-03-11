@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 13:40:26 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/10 14:25:02 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/11 11:13:30 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,11 @@ char    **add_arg(char **args, char *value)
     len = 0;
     while (args && args[len])
         len ++;
+
     char **new_args = malloc(sizeof(char *) * (len + 2));
     if (!new_args)
         return (NULL);
+
     i = 0;
     while (i < len)
     {

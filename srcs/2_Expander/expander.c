@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 09:33:54 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/10 09:48:38 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/11 11:06:43 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 #include "minishell.h"
 
-char    *expand_variable(const char *str, int *pos)
+char	*expand_variable(const char *str, int *pos)
 {
 	char	key[256];
 	int		k;
