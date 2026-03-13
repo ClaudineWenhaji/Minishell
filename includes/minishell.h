@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:44:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/03/11 16:37:43 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/13 19:04:51 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <readline/history.h>
 # include <unistd.h>
 # include <signal.h>
+# include <limits.h>
 # define SIG_ERROR_MSG "Error : fail to catch a signal.\n"
 
 # include <string.h>
@@ -44,14 +45,20 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
-typedef struct s_cmd
+typedef struct s_redir_file
 {
-	char			**args;
-	char			*input_file;
-	char			*output_file;
-	int				append;
-	struct s_cmd	*next;
-}	t_cmd;
+	struct s_redir_file	*next;
+	t_token_type		type;
+	char				*file;
+}	t_redir_file;
+
+typedef struct s_command_ast
+{
+	struct s_command_ast	*next;
+	char					*command;
+	t_list					*args;
+	t_redir_file			*redirs;
+}	t_command_ast;
 
 typedef struct s_data
 {
@@ -71,15 +78,21 @@ t_token			*lexer(char *line);
 void			free_tokens(t_token *tokens);
 void			print_tokens(t_token *tokens);
 char			*token_type_str(t_token_type type);
+int				ft_isoperator(char c);
+int				ft_isquote(char c);
+int				ft_isspace(char c);
 
 char			*expand_variable(const char *str, int *pos);
 
-char			**add_arg(char **args, char *value);
-t_cmd			*parse_tokens(t_token *tokens);
-void			print_args(char **args);
-void			print_command(t_cmd *cmd, int index);
-void			print_commands(t_cmd *cmd_list);
+t_command_ast	*parser(t_token *tokens);
+void			print_commands(t_command_ast *cmds);
+int				is_type_redir(t_token *token);
+void			affect_token(t_token **token, t_token *token_to_be);
+void			ft_free_command(t_command_ast **command);
 
-int	copy_expanded_var(t_data *data, char *buffer, int *buf_pos);
+int				copy_expanded_var(t_data *data, char *buffer, int *buf_pos);
+
+int	builtin_echo(char **args);
+int	builtin_pwd(void);
 
 #endif

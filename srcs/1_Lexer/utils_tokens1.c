@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 10:51:57 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/11 16:14:58 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/13 16:00:49 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,17 +57,18 @@ void	add_token(t_token **head, t_token *new)
 char	*token_type_str(t_token_type type)
 {
 	if (type == WORD)
-		return (WORD);
+		return ("WORD");
 	if (type == PIPE)
-		return (PIPE);
+		return ("PIPE");
 	if (type == REDIR_IN)
-		return (REDIR_IN);
+		return ("REDIR_IN");
 	if (type == REDIR_OUT)
-		return (REDIR_OUT);
+		return ("REDIR_OUT");
 	if (type == APPEND)
-		return (APPEND);
+		return ("APPEND");
 	if (type == HEREDOC)
-		return (HEREDOC);
+		return ("HEREDOC");
+	return ("UNKNOWN TYPE");
 }
 
 void	print_tokens(t_token *tokens)
@@ -76,17 +77,17 @@ void	print_tokens(t_token *tokens)
 	{
 		printf("TYPE: %s", token_type_str(tokens->type));
 		if (tokens->value)
-			printf(" | VALUE: %s", tokens->value);
+			printf(": %s", tokens->value);
 		else if (tokens->type == PIPE)
-			printf(" | VALUE: |");
+			printf(": |");
 		else if (tokens->type == REDIR_OUT)
-			printf(" | VALUE: >");
+			printf(": >");
 		else if (tokens->type == REDIR_IN)
-			printf(" | VALUE: <");
+			printf(": <");
 		else if (tokens->type == APPEND)
-			printf(" | VALUE: >>");
+			printf(": >>");
 		else if (tokens->type == HEREDOC)
-			printf(" | VALUE: <<");
+			printf(": <<");
 		printf("\n");
 		tokens = tokens->next;
 	}

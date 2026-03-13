@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 15:54:24 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/11 16:07:28 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/13 16:11:31 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,24 +55,23 @@ int	process_token(t_data *data, t_token **tokens)
 	char			*word;
 	t_token			*tok;
 
-	type = get_operator_type(&data);
+	type = get_operator_type(data);
 	if (type != WORD)
 	{		
-		add_token(&tokens, new_token(type, NULL));
+		add_token(tokens, new_token(type, NULL));
 		data->pos++;
 	}
 	else
 	{
-		word = read_word(&data);
+		word = read_word(data);
 		tok = new_token(WORD, word);
 		if (!tok)
 		{
 			free(word);
-			free_tokens(tokens);
+			free_tokens(*tokens);
 			return (0);
 		}
-		add_token(&tokens, tok);
-		//free(word);
+		add_token(tokens, tok);
 	}
 	return (1);
 }
@@ -96,39 +95,3 @@ t_token	*lexer(char *line)
 	}
 	return (tokens);
 }
-
-/*
-int	main()
-{
-	char *line0 = "echo \"hello world\" | grep hello | wc -l >> file.txt";
-	char *line0a = "echo \"hello world | grep hello | wc -l >> file.txt"; // quote non fermee
-	char *line1 = "cat << EOF";
-	char *line2 = "echo hello\"world\""; // melange texte + quotes doubles
-	char *line3 = "\'hello world\'"; // quotes simples
-	char *line3a = "\'hello world"; // quotes simples non fermees
-	char *line4 = "ls -la"; // commande simple
-	char *line5 = "ls | wc";
-	char *line6 = "ls -l | grep .c"; // pipe avec arguments
-	char *line7 = "";
-	char *line8 = "echo hello>file"; // redirection sans espace
-	char *line8b = "echo hello > file";
-	char *line8c = "cat<<EOF"; // sans espaces
-	char *line8d = "cat << EOF"; 
-	char *line9 = "grep \"main\" <file.c | wc -l >> result.txt"; // commande complexe
-	char *line9a = "echo \\ word"; // \ a ne pas traiter dans le sujet
-	char *line9b = "echo ; word"; // ; a ne pas traiter aussi
-
-	t_token *tokens = lexer(line3a);
-	t_token *tmp = tokens;
-
-	while (tmp)
-	{
-		printf("Token: %d", tmp->type);
-        	if (tmp->value)
-            		printf(" (%s)", tmp->value);
-        	printf("\n");
-        	tmp = tmp->next;
-	}
-	free_tokens(tokens);
-	return (0);
-}*/
