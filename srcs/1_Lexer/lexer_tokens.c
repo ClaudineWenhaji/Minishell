@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 15:54:24 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/13 16:11:31 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/16 11:26:32 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,11 @@ int	process_token(t_data *data, t_token **tokens)
 	else
 	{
 		word = read_word(data);
+		if (!word)
+		{
+			free_tokens(*tokens);
+			return (0);
+		}
 		tok = new_token(WORD, word);
 		if (!tok)
 		{

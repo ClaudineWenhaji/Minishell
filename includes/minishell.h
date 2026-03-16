@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:44:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/03/13 19:04:51 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/16 11:53:01 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,5 +94,6 @@ int				copy_expanded_var(t_data *data, char *buffer, int *buf_pos);
 
 int	builtin_echo(char **args);
 int	builtin_pwd(void);
+int builtin_cd(char **args);
 
 #endif

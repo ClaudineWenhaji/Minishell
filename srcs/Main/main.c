@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 13:20:54 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/13 14:49:13 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/16 11:27:42 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,11 @@ int	main(int argc, char **argv, char **envp)
 		if (*line)
 			add_history(line);
 		tokens = lexer(line);
+		if (!tokens)
+		{
+			free(line);
+			continue ;
+		}
 		print_tokens(tokens);
 		cmds = parser(tokens);
 		print_commands(cmds);

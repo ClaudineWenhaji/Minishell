@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 16:06:16 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/11 16:07:19 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/16 11:40:27 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	*read_word_between_quotes(t_data *data, char quote)
 		data->pos++;
 	else
 	{
-		printf("syntax error: unclosed quote %c\n", quote);
+		printf("minishell: syntax error: unclosed quote %c\n", quote);
 		return (NULL);
 	}
 	buffer[buf_pos] = '\0';
