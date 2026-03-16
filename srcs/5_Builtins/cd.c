@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 12:19:10 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/16 12:34:39 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/16 17:11:05 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 // On success, 0 is returned.  
 // On error, -1 is returned, 
 // and errno is set appropriately
+
 #include "minishell.h"
 
 int builtin_cd(char **args)
@@ -37,3 +38,23 @@ int builtin_cd(char **args)
     }
     return (0);
 }
+/*
+
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+int main(void)
+{
+    char cwd[1024];
+    char *args1[] = {"cd", "/tmp", NULL};
+    
+    getcwd(cwd, sizeof(cwd));
+    printf("Current Dir: %s\n", cwd);
+    
+    builtin_cd(args1);
+    getcwd(cwd, sizeof(cwd));
+    printf("Dir after cd /tmp: %s\n", cwd);
+    
+    return (0);
+}*/

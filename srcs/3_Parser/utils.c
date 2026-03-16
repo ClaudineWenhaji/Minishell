@@ -6,60 +6,81 @@
 /*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 06:22:02 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/03/13 13:35:43 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/14 00:24:19 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_type_redir(t_token *token)
+int is_type_redir(t_token *token)
 {
-	return (token->type == APPEND || token->type == HEREDOC
-		|| token->type == REDIR_IN || token->type == REDIR_OUT);
+    return (token->type == APPEND || token->type == HEREDOC
+            || token->type == REDIR_IN || token->type == REDIR_OUT);
 }
 
-void	affect_token(t_token **token, t_token *token_to_be)
+void    affect_token(t_token **token, t_token *token_to_be)
 {
-	*token = token_to_be;
+    *token = token_to_be;
 }
 
-static void	ft_clear_redir(t_redir_file **head)
+int    affect_command_param(t_command_ast *command, t_token *token)
 {
-	t_redir_file	*current_redir;
-	t_redir_file	*redir_to_free;
+    t_list  *node;
 
-	if (!head || !*head)
-		return ;
-	current_redir = *head;
-	while (current_redir)
-	{
-		redir_to_free = current_redir;
-		current_redir = current_redir->next;
-		if (redir_to_free->file)
-			free(redir_to_free->file);
-		free(redir_to_free);
-	}
-	*head = NULL;
+    node = NULL;
+    if (!command->command)
+    {
+        command->command = ft_strdup(token->value);
+        if (!command->command)
+            return (0);
+    }
+    else
+    {
+        node = ft_lstnew(ft_strdup(token->value));
+        if (!node)
+            return (0);
+        ft_lstadd_back(&command->args, node);
+    }
+    return (1);
 }
 
-void	ft_free_command(t_command_ast **command)
+static  void    ft_clear_redir(t_redir_file **head)
 {
-	t_command_ast	*current_command;
-	t_command_ast	*command_to_free;
+    t_redir_file    *current_redir;
+    t_redir_file    *redir_to_free;
 
-	if (!command || !*command)
-		return ;
-	current_command = *command;
-	while (current_command)
-	{
-		command_to_free = current_command;
-		current_command = current_command->next;
-		if (command_to_free->command)
-			free(command_to_free->command);
-		if (command_to_free->args)
-			ft_lstclear(&command_to_free->args, free);
-		ft_clear_redir(&command_to_free->redirs);
-		free(command_to_free);
-	}
-	*command = NULL;
+    if (!head || !*head)
+        return ;
+    current_redir = *head;
+    while (current_redir)
+    {
+        redir_to_free = current_redir;
+        current_redir = current_redir->next;
+        if (redir_to_free->file)
+            free(redir_to_free->file);
+        free(redir_to_free);
+    }
+    *head = NULL;
+}
+
+void    ft_free_command(t_command_ast **command)
+{
+    t_command_ast   *current_command;
+    t_command_ast   *command_to_free;
+
+    if (!command || !*command)
+        return ;
+    current_command = *command;
+    while (current_command)
+    {
+        command_to_free = current_command;
+        current_command = current_command->next;
+        if (command_to_free->command)
+            free(command_to_free->command);
+        if (command_to_free->args)
+            ft_lstclear(&command_to_free->args, free);
+        ft_clear_redir(&command_to_free->redirs);
+        free(command_to_free);
+    }
+    *command = NULL;
 }

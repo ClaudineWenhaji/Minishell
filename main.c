@@ -18,9 +18,7 @@ void	handle_signal(int sig)
 void	check_builtin_and_do(t_command_ast *cmds, char **envp)
 {
 	if (ft_strcmp(cmds->command, "export") == 0 && !cmds->args)
-		builtin_export(NULL, envp);
-	else if (ft_strcmp(cmds->command, "cd") == 0)
-		builtin_cd(NULL);
+		ft_export(NULL, envp);
 	else if (ft_strcmp(cmds->command, "unset") == 0)
 		return ;
 

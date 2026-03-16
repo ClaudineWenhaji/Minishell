@@ -6,7 +6,7 @@
 /*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 15:00:00 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/03/13 13:28:58 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/10 15:32:15 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 void	print_commands(t_command_ast *cmds)
 {
 	t_command_ast	*curr;
-	t_redir_file	*redir;
 	t_list			*arg;
+	t_redir_file	*redir;
 	int				i;
 
 	curr = cmds;

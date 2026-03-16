@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:44:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/03/16 11:53:01 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/16 17:23:34 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,13 @@
 # include <ctype.h>
 
 extern int	g_status;
+
+typedef struct e_env_var
+{
+        char                            *key;
+        char                            *value;
+        struct e_env_var        *next;
+} t_env_var;
 
 typedef enum e_token_type
 {
@@ -60,6 +67,11 @@ typedef struct s_command_ast
 	t_redir_file			*redirs;
 }	t_command_ast;
 
+typedef struct s_shell
+{
+	char	**env;
+} t_shell;
+
 typedef struct s_data
 {
 	char	*line;
@@ -85,6 +97,9 @@ int				ft_isspace(char c);
 char			*expand_variable(const char *str, int *pos);
 
 t_command_ast	*parser(t_token *tokens);
+int 			get_command_param(t_command_ast *command, t_token **curr_token);
+int				affect_command_param(t_command_ast *command, t_token *token);
+
 void			print_commands(t_command_ast *cmds);
 int				is_type_redir(t_token *token);
 void			affect_token(t_token **token, t_token *token_to_be);
@@ -92,8 +107,10 @@ void			ft_free_command(t_command_ast **command);
 
 int				copy_expanded_var(t_data *data, char *buffer, int *buf_pos);
 
-int	builtin_echo(char **args);
-int	builtin_pwd(void);
-int builtin_cd(char **args);
+int				builtin_echo(char **args);
+int				builtin_pwd(void);
+int 			builtin_cd(char **args);
+void    		builtin_export(char **args, char **envp);
+
 
 #endif
