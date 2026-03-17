@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:44:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/03/16 17:23:34 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/17 15:52:35 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,6 @@
 
 extern int	g_status;
 
-typedef struct e_env_var
-{
-        char                            *key;
-        char                            *value;
-        struct e_env_var        *next;
-} t_env_var;
 
 typedef enum e_token_type
 {
@@ -67,10 +61,12 @@ typedef struct s_command_ast
 	t_redir_file			*redirs;
 }	t_command_ast;
 
-typedef struct s_shell
+typedef struct e_env
 {
-	char	**env;
-} t_shell;
+        char                            *key;
+        char                            *value;
+        struct e_env        *next;
+} t_env;
 
 typedef struct s_data
 {
@@ -107,9 +103,11 @@ void			ft_free_command(t_command_ast **command);
 
 int				copy_expanded_var(t_data *data, char *buffer, int *buf_pos);
 
+char    		**copy_env(char **envp);
+
 int				builtin_echo(char **args);
 int				builtin_pwd(void);
-int 			builtin_cd(char **args);
+int 			builtin_cd(char **args, char **envp);
 void    		builtin_export(char **args, char **envp);
 
 

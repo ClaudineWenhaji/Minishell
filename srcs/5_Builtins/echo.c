@@ -6,13 +6,10 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 16:37:39 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/13 18:56:50 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/17 14:49:19 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
 #include "minishell.h"
 
 int	is_n_options(char *arg)
@@ -58,6 +55,10 @@ int	builtin_echo(char **args)
 }
 
 /*
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 int main(void)
 {
     char *test1[] = {"echo", "hello", NULL};

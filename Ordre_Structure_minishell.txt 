@@ -1,0 +1,130 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Ordre_Structure_minishell.txt                      :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/03/17 15:58:52 by clwenhaj          #+#    #+#              #
+#    Updated: 2026/03/17 16:01:25 by clwenhaj         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Étape 1 : Boucle principale et lecture de commande
+
+    Afficher un prompt, par exemple minishell>
+
+    Lire la ligne avec readline() ou getline()
+
+    Ajouter la ligne à l’historique (optionnel)
+
+    Appeler ton parser pour transformer la ligne en structure de commandes
+
+    But : tester que ton shell peut tourner en boucle et parser les commandes
+    
+
+Étape 2 : Exécution des builtins
+
+    Vérifier si la commande est un builtin (cd, echo, pwd, export, unset)
+
+    Appeler la fonction correspondante
+
+    Si ce n’est pas un builtin → passer à l’étape suivante
+
+    But : ton shell exécute déjà correctement les builtins
+    
+
+Étape 3 : Exécution des commandes externes
+
+    Pour les commandes comme ls, cat, etc. :
+
+        Vérifier $PATH pour trouver l’exécutable
+
+        fork() pour créer un processus enfant
+
+        execve() pour exécuter la commande
+
+        waitpid() dans le parent pour attendre la fin
+
+    But : ton shell peut lancer n’importe quelle commande du système
+
+Étape 4 : Gestion des redirections
+
+    Types :
+
+        > : redirection stdout vers un fichier (écrase)
+
+        >> : redirection stdout (append)
+
+        < : redirection stdin depuis un fichier
+
+    Étapes :
+
+        Ouvrir le fichier (open())
+
+        Rediriger le flux (dup2())
+
+        Fermer le fichier
+
+        Exécuter la commande
+
+    But : tu peux faire ls > file.txt ou cat < file.txt
+
+
+Étape 5 : Gestion des pipes
+
+    Pour les commandes en pipeline comme ls | grep txt | sort
+
+    Étapes :
+
+        Créer un pipe avec pipe()
+
+        fork() pour chaque processus
+
+        Connecter les pipes aux entrées/sorties avec dup2()
+
+        Fermer les pipes inutiles
+
+        Attendre tous les enfants
+
+    But : ton shell peut exécuter des pipelines de comman
+
+Étape 6 : Gestion des signaux
+
+    Gérer Ctrl+C (SIGINT) pour interrompre une commande sans fermer le shell
+
+    Gérer Ctrl+\ (SIGQUIT)
+
+    Ignorer certains signaux dans le shell parent
+
+    But : expérience utilisateur similaire à bash
+
+Étape 7 : Gestion des variables d’environnement
+
+    Tu as déjà :
+
+        PWD, OLDPWD pour cd
+
+        export pour ajouter/modifier
+
+    Ajouter :
+
+        unset pour supprimer
+
+        Lecture des variables $HOME, $PATH pour builtins et commandes externes
+
+    But : les programmes lancés héritent d’un environnement correct
+
+Étape 8 : Nettoyage et mémoire
+
+    Libérer toutes les allocations :
+
+        Structures de commande
+
+        Lignes lues
+
+        Variables d’environnement créées dynamiquement
+
+    But : éviter les fuites mémoire
+
+

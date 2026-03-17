@@ -15,15 +15,17 @@ void	handle_signal(int sig)
 		g_status = 0;
 }
 
-void	check_builtin_and_do(t_command_ast *cmds, char **envp)
+int	execute_builtin(t_command_ast *cmds, char **envp)
 {
-	if (ft_strcmp(cmds->command, "export") == 0 && !cmds->args)
-		builtin_export(NULL, envp);
+	if (ft_strcmp(cmds->command, "export") == 0)
+		return (builtin_export(cmds->args, envp));
 	else if (ft_strcmp(cmds->command, "cd") == 0)
-		builtin_cd(NULL);
-	else if (ft_strcmp(cmds->command, "unset") == 0)
-		return ;
-
+		return (builtin_cd(cmds->args, envp));
+	else if (ft_strcmp(cmds->command, "echo") == 0)
+		return (builtin_echo(cmds->args));
+	else if (ft_strcmp(cmds->command, "pwd") == 0)
+		return (builtin_pwd());
+	return (-1);
 }
 
 void	do_commands(t_command_ast *cmds, char **envp)
@@ -33,11 +35,20 @@ void	do_commands(t_command_ast *cmds, char **envp)
 	node = cmds;
 	while (node)
 	{
-		check_builtin_and_do(node, envp);
+		execute_builtin(node, envp);
 		node = node->next;
 	}
 }
 
+int	execute_command(t_command_ast *cmd, t_env **env)
+{
+	int ret;
+
+	ret = execute_builtin(cmd, env);
+	if (ret != -1)
+		return (ret);
+	return (execute_external_command(cmd, env));
+}
 static void	lp_read_loop(char *line, char **envp)
 {
 	t_token			*tokens;
@@ -48,9 +59,11 @@ static void	lp_read_loop(char *line, char **envp)
 		exit(EXIT_SUCCESS);
 	add_history(line);
 	tokens = lexer(line);
+	//print_tokens(tokens);
 	cmds = parser(tokens);
 	print_commands(cmds);
 	//do_commands(cmds, envp);
+	execute_command(cmds, envp);
 	ft_free_command(&cmds);
 	free_tokens(tokens);
 }
