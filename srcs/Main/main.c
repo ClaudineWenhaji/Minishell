@@ -40,14 +40,14 @@ void	do_commands(t_command_ast *cmds, char **envp)
 	}
 }
 
-int	execute_command(t_command_ast *cmd, t_env **env)
+int	execute_command(t_command_ast *cmds, t_env **envp)
 {
 	int ret;
 
-	ret = execute_builtin(cmd, env);
+	ret = execute_builtin(cmds, envp);
 	if (ret != -1)
 		return (ret);
-	return (execute_external_command(cmd, env));
+	return (execute_external_command(cmds, envp));
 }
 static void	lp_read_loop(char *line, char **envp)
 {

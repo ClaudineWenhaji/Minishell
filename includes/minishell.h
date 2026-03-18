@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 15:44:47 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/03/17 15:52:35 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/18 10:54:48 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ char    		**copy_env(char **envp);
 int				builtin_echo(char **args);
 int				builtin_pwd(void);
 int 			builtin_cd(char **args, char **envp);
-void    		builtin_export(char **args, char **envp);
+int    		builtin_export(char **args, char **envp);
 
 
 #endif
