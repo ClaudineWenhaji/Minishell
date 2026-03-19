@@ -6,13 +6,13 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 16:37:39 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/18 16:10:23 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/19 12:38:47 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "builtin.h"
 
-int	is_n_options(char *arg)
+static int	is_n_options(char *arg)
 {
 	int	i;
 
@@ -30,28 +30,25 @@ int	is_n_options(char *arg)
 	return (1);
 }
 
-int	ft_echo(char **args)
+void	ft_echo(t_list *args)
 {
-	int	i;
 	int	flag_newline;
 
-	i = 1;
 	flag_newline = 1;
-	while (args[i] && is_n_options(args[i]))
+	while (args && is_n_options((char *)args->content))
 	{
 		flag_newline = 0;
-		i++;
+		args = args->next;
 	}
-	while (args[i])
+	while (args)
 	{
-		printf("%s", args[i]);
-		if (args[i + 1])
+		printf("%s", (char *)args->content);
+		if (args->next)
 			printf(" ");
-		i++;
+		args = args->next;
 	}
 	if (flag_newline)
 		printf("\n");
-	return (0);
 }
 
 /*
@@ -70,31 +67,31 @@ int main(void)
     char *test7[] = {"echo", "-n", NULL};
 
     printf("Test 1: echo hello\nExpected: hello\\n\nOutput:   ");
-    builtin_echo(test1);
+    ft_echo(test1);
     printf("\n\n");
 
     printf("Test 2: echo -n hello\nExpected: hello\nOutput:   ");
-    builtin_echo(test2);
+    ft_echo(test2);
     printf("\n\n");
 
     printf("Test 3: echo -nn hello world\nExpected: hello world\nOutput:   ");
-    builtin_echo(test3);
+    ft_echo(test3);
     printf("\n\n");
 
     printf("Test 4: echo -nhello\nExpected: -nhello\\n\nOutput:   ");
-    builtin_echo(test4);
+    ft_echo(test4);
     printf("\n\n");
 
     printf("Test 5: echo -n -n hello\nExpected: hello\nOutput:   ");
-    builtin_echo(test5);
+    ft_echo(test5);
     printf("\n\n");
 	
 	printf("Test 6: echo\nExpected: \\n\nOutput:   ");
-    builtin_echo(test6);
+    ft_echo(test6);
     printf("\n\n");
 
     printf("Test 7: echo -n\nExpected: (nothing)\nOutput:   ");
-    builtin_echo(test7);
+    ft_echo(test7);
     printf("\n\n");
 
     return 0;

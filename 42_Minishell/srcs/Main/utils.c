@@ -1,31 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 19:01:17 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/18 16:10:36 by clwenhaj         ###   ########.fr       */
+/*   Created: 2026/03/05 15:45:59 by vnaoussi          #+#    #+#             */
+/*   Updated: 2026/03/16 17:03:26 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// char *getcwd(char *buf, size_t size) 
-// getcwd(cwd, PATH_MAX) PATH_MAX souvent limite a 4096
-// getcwd(NULL, 0) alloue dynamiquement la memoire pour le chemin
 #include "minishell.h"
 
-int	ft_pwd(void)
+int	quit_error(char *msg)
 {
-	char	*cwd;
+	write(2, msg, ft_strlen(msg));
+	return (1);
+}
 
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-		perror ("pwd");
-	else
-	{
-		printf("%s\n", cwd);
-		free(cwd);
-	}
-	return (0);
+void	ft_free(void **nptr)
+{
+	free(*nptr);
+	*nptr = NULL;
 }

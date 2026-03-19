@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 11:35:09 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/18 11:13:08 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/18 16:10:08 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ staic int	error_cd(void)
 	return (1);
 }
 
-int	builtin_cd(char **args, char **envp)
+int	ft_cd(char **args, char **envp)
 {
 	char	*pwd;
 

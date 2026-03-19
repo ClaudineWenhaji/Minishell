@@ -18,13 +18,13 @@ void	handle_signal(int sig)
 int	execute_builtin(t_command_ast *cmds, char **envp)
 {
 	if (ft_strcmp(cmds->command, "export") == 0)
-		return (builtin_export(cmds->args, envp));
+		return (ft_export(cmds->args, envp));
 	else if (ft_strcmp(cmds->command, "cd") == 0)
-		return (builtin_cd(cmds->args, envp));
+		return (ft_cd(cmds->args, envp));
 	else if (ft_strcmp(cmds->command, "echo") == 0)
-		return (builtin_echo(cmds->args));
+		return (ft_echo(cmds->args));
 	else if (ft_strcmp(cmds->command, "pwd") == 0)
-		return (builtin_pwd());
+		return (ft_pwd());
 	return (-1);
 }
 
