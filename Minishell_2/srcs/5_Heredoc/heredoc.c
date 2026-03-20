@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clwenhaj <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 13:59:45 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/20 10:29:53 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/20 16:11:12 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,35 +16,43 @@ int	handle_heredoc(const char *delimiter)
 {
 	int	pipefd[2];
 	char	*line;
+	pid_t	pid;
+	int		status;
 
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");
 		return (-1);
 	}
-	while (1)
+	pid = fork();	
+	if (pid == 0)
 	{
-		line = readline("> ");
-		if (!line)
+		close(pipefd[0]);
+		while (1)
 		{
-			printf("warning: heredoc ended by EOF\n");
-			break ;
-		}
-		if (ft_strcmp(line, delimiter) == 0)
-		{
+			line = readline("> ");
+			if (!line || ft_strcmp(line, delimiter) == 0)
+			{
+				if (!line)
+					printf("warning: heredoc ended by EOF\n");
+				free(line);
+				break ;
+			}
+			write(pipefd[1], line, ft_strlen(line));
+			write(pipefd[1], "\n", 1);
 			free(line);
-			break ;
 		}
-		write(pipefd[1], line, ft_strlen(line));
-		write(pipefd[1], "\n", 1);
-		free(line);
+		close(pipefd[1]);
+		exit(0);
 	}
 	close(pipefd[1]);
-	return (pipefd[0]);
-/*	exit(0);
+	waitpid(pid, &status, 0);
+	if (dup2(pipefd[0], STDIN_FILENO) == -1)
+	{
+		perror("dup2");
+		close(pipefd[0]);
+		return (-1);
 	}
-	close(pipefd[1]);
-	wait(NULL);
-	dup2(pipefd[0], STDIN_FILENO);
-	return (pipefd[0]);*/
+	close(pipefd[0]);
+	return (0);
 }

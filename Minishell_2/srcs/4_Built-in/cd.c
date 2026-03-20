@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 11:35:09 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/20 10:34:39 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/03/20 14:37:19 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ void ft_cd(char *args, t_env_var *envp)
 	    printf("cd: missing arguments\n");
         return ;
     }
-    if (args[2])
+    /*if (args[2])
     {
         printf("cd: too many arguments\n");
         return ;
-    }
+    }*/
     oldpwd = getcwd(NULL, 0);
     if (!oldpwd)
     {
