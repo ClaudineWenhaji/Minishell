@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 09:33:54 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/23 18:55:48 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/07 16:09:19 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,18 @@ char	*expand_variable(const char *str, int *pos, t_env_var *env_vars)
 		(*pos)++;
 		return (ft_itoa(g_status));
 	}
+	if (str[*pos] == '"')
+	{
+		if (str[*pos + 1] == '"')
+		{
+			*pos += 2;
+			return (ft_strdup(""));
+		}
+		return (ft_strdup("$"));
+	}
+
+	if (!ft_isalpha(str[*pos]) && str[*pos] != '_')
+		return (ft_strdup("$"));
 	k = 0;
 	while (str[*pos] && (ft_isalnum(str[*pos]) || str[*pos] == '_'))
 	{

@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 15:54:24 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/04/03 11:56:02 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/04/07 11:17:55 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static char	*read_word_between_quotes(t_data *data, char quote)
 	char	buffer[1024];
 	char	*tmp;
 	int		buf_pos;
+	int		start_pos;
 
 	buf_pos = 0;
 	data->pos++;
@@ -25,11 +26,15 @@ static char	*read_word_between_quotes(t_data *data, char quote)
 	{
 		if (quote == '"' && data->line[data->pos] == '$')
 		{
+			start_pos = data->pos;
 			data->pos++;
 			tmp = expand_variable(data->line, &data->pos, data->env_vars);
 			if (!tmp)
 				return (NULL);
-			buf_pos += ft_strlcpy(buffer + buf_pos, tmp, 1024 - buf_pos);
+			if (data->pos == start_pos + 1)
+				buffer[buf_pos++] = '$';
+			else
+				buf_pos += ft_strlcpy(buffer + buf_pos, tmp, 1024 - buf_pos);
 			free(tmp);
 		}
 		else
@@ -46,6 +51,7 @@ static char	*read_normal_word(t_data *data)
 	char	buffer[1024];
 	int		buf_pos;
 	char	*tmp;
+	int		start_pos;
 
 	buf_pos = 0;
 	while (data->line[data->pos] && !ft_isspace(data->line[data->pos])
@@ -54,11 +60,15 @@ static char	*read_normal_word(t_data *data)
 	{
 		if (data->line[data->pos] == '$')
 		{
+			start_pos = data->pos;
 			data->pos++;
 			tmp = expand_variable(data->line, &data->pos, data->env_vars);
 			if (!tmp)
 				return (NULL);
-			buf_pos += ft_strlcpy(buffer + buf_pos, tmp, 1024 - buf_pos);
+			if (data->pos == start_pos + 1)
+				buffer[buf_pos++] = '$';
+			else
+				buf_pos += ft_strlcpy(buffer + buf_pos, tmp, 1024 - buf_pos);
 			free(tmp);
 		}
 		else
