@@ -25,6 +25,7 @@
 # define SIG_ERROR_MSG "Error : fail to catch a signal.\n"
 # include <string.h>
 # include <ctype.h>
+# include <stddef.h>
 
 extern int	g_status;
 
@@ -50,6 +51,7 @@ typedef struct s_redir_file
 	struct s_redir_file	*next;
 	t_token_type		type;
 	char				*file;
+	int			expand;
 	int					heredoc_fd;
 }	t_redir_file;
 
@@ -95,7 +97,8 @@ void			ft_free(void **nptr);
 int				affect_command_param(t_command_ast *command, t_token *token);
 void			ft_exit(t_minishell_data **data);
 int				apply_redirections(t_redir_file *redir);
-int				handle_heredoc(const char *delimiter);
+int				handle_heredoc(const char *delimiter, t_env_var *envs, int expand);
+char		*expand_line(char *line, t_env_var *env);	
 void			ft_free_table(char ***table, int len);
 void			fork_child_do(t_command_ast *command, t_minishell_data **data);
 void			fork_parent_do(int *fd_in, t_command_ast *command,
@@ -113,5 +116,10 @@ int				open_file(t_redir_file *redir);
 int				exec_builtin(t_command_ast *cmd, t_minishell_data **data);
 void			handle_fork_signal(int sig);
 void			handle_signal(int sig);
+int			is_quoted(char *str);
+char			*remove_quotes(char *str);
+int			ft_addredir_heredoc(t_redir_file **head, char *file, int expand);
+int			is_single_quoted(char *str);
+char 			*strip_quotes(const char *str);
 
 #endif

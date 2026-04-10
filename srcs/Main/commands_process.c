@@ -89,10 +89,12 @@ static int	init_bf_execute(t_command_ast *cmds, t_command_ast **cmd,
 	return (i);
 }
 
-static int	prepare_heredoc(t_command_ast *cmds)
+static int	prepare_heredoc(t_command_ast *cmds, t_minishell_data *data)
 {
 	t_command_ast	*cmd;
 	t_redir_file	*redir;
+	int		expand;
+	char		*delimiter;
 
 	cmd = cmds;
 	while (cmd)
@@ -102,11 +104,16 @@ static int	prepare_heredoc(t_command_ast *cmds)
 		{
 			if (redir->type == HEREDOC)
 			{
-				redir->heredoc_fd = handle_heredoc(redir->file);
+				expand = !is_single_quoted(redir->file);
+				delimiter = strip_quotes(redir->file);
+				if (!delimiter)
+					return (0);
+				redir->heredoc_fd = handle_heredoc(delimiter,
+						data->envs, expand);
 				if (redir->heredoc_fd < 0)
 				{
 					g_status = 130;
-					close(redir->heredoc_fd);
+					//close(redir->heredoc_fd);
 					return (0);
 				}
 			}
@@ -125,7 +132,7 @@ void	execute_pipeline(t_command_ast *cmds, t_minishell_data **data)
 	t_command_ast	*cmd;
 	int				i;
 
-	if (!cmds || !prepare_heredoc(cmds))
+	if (!cmds || !prepare_heredoc(cmds, *data))
 		return ;
 	(signal(SIGINT, SIG_IGN), signal(SIGQUIT, SIG_IGN));
 	if (!cmds->next && check_built_parent(cmds, data))

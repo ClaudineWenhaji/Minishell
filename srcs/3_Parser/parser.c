@@ -38,6 +38,7 @@ static int	ft_addredir(t_redir_file **head, t_token_type type, char *file)
 		return (0);
 	node->next = NULL;
 	node->type = type;
+	node->expand = 1;
 	node->file = ft_strdup(file);
 	if (!node->file)
 		return (free(node), 0);
@@ -55,6 +56,9 @@ static int	ft_addredir(t_redir_file **head, t_token_type type, char *file)
 
 int	get_command_param(t_command_ast *command, t_token **curr_token)
 {
+        char *clean;
+        int expand;
+
 	if (!(*curr_token))
 		return (1);
 	else if ((*curr_token)->type == PIPE && (*curr_token)->next)
@@ -64,12 +68,33 @@ int	get_command_param(t_command_ast *command, t_token **curr_token)
 		if (!affect_command_param(command, *curr_token))
 			return (0);
 	}
-	else if (is_type_redir(*curr_token) && (*curr_token)->next)
+	/*else if (is_type_redir(*curr_token) && (*curr_token)->next)
 	{
 		if ((*curr_token)->next->type != WORD || !ft_addredir(&command->redirs,
 				(*curr_token)->type, (*curr_token)->next->value))
 			return (0);
 		*curr_token = (*curr_token)->next;
+	}*/
+	else if (is_type_redir(*curr_token) && (*curr_token)->next)
+	{
+		t_token *next = (*curr_token)->next;
+		if (next->type != WORD)
+			return (0);
+		if ((*curr_token)->type == HEREDOC)
+		{
+			expand = !is_quoted(next->value);
+			clean = remove_quotes(next->value);
+			if (!ft_addredir_heredoc(&command->redirs, clean, expand))
+				return (free(clean), 0);
+			free(clean);
+		}
+		else
+		{
+			if (!ft_addredir(&command->redirs,
+						(*curr_token)->type, next->value))
+				return (0);
+		}
+		*curr_token = next;
 	}
 	else
 		return (0);
