@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 23:49:38 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/04/03 13:56:32 by vnaoussi         ###   ########.fr       */
+/*   Updated: 2026/04/10 13:04:31 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,14 +108,11 @@ static int	prepare_heredoc(t_command_ast *cmds, t_minishell_data *data)
 				delimiter = strip_quotes(redir->file);
 				if (!delimiter)
 					return (0);
-				redir->heredoc_fd = handle_heredoc(delimiter,
-						data->envs, expand);
+				redir->heredoc_fd = handle_heredoc(delimiter, expand,
+						data->envs);
+				free(delimiter);
 				if (redir->heredoc_fd < 0)
-				{
-					g_status = 130;
-					//close(redir->heredoc_fd);
-					return (0);
-				}
+					return (g_status = 130, 0);
 			}
 			redir = redir->next;
 		}

@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 09:33:54 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/04/07 16:09:19 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/10 13:26:32 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,24 @@ static char	*get_env_val(const char *key, t_env_var *env_vars)
 	return (ft_strdup(""));
 }
 
+/*static char *get_env_smart(char *key, t_env_var *env)
+{
+	char *val;
+	while (*key)
+	{
+		val = get_env_val(key, env);
+		if (val)
+			return (val);
+		key[ft_strlen(key) - 1] = '\0';
+	}
+	return (ft_strdup(""));
+}*/
+
 char	*expand_variable(const char *str, int *pos, t_env_var *env_vars)
 {
 	char	key[256];
 	int		k;
+	//char	saved;
 
 	if (!str || !pos)
 		return (ft_strdup(""));
@@ -50,7 +64,7 @@ char	*expand_variable(const char *str, int *pos, t_env_var *env_vars)
 		(*pos)++;
 		return (ft_itoa(g_status));
 	}
-	if (str[*pos] == '"')
+	/*if (str[*pos] == '"')
 	{
 		if (str[*pos + 1] == '"')
 		{
@@ -58,7 +72,7 @@ char	*expand_variable(const char *str, int *pos, t_env_var *env_vars)
 			return (ft_strdup(""));
 		}
 		return (ft_strdup("$"));
-	}
+	}*/
 
 	if (!ft_isalpha(str[*pos]) && str[*pos] != '_')
 		return (ft_strdup("$"));
@@ -70,5 +84,8 @@ char	*expand_variable(const char *str, int *pos, t_env_var *env_vars)
 		(*pos)++;
 	}
 	key[k] = '\0';
-	return (get_env_val(key, env_vars));
+	if (get_env_val(key, env_vars))
+			return (get_env_val(key, env_vars));
+	return (ft_strdup(""));
+	//return (get_env_val(key, env_vars));
 }

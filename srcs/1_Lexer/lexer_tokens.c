@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 15:54:24 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/04/07 11:17:55 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/10 13:13:53 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ static char	*read_normal_word(t_data *data)
 	int		start_pos;
 
 	buf_pos = 0;
-	while (data->line[data->pos] && !ft_isspace(data->line[data->pos])
+	while (data->line[data->pos]
+		&& !ft_isspace(data->line[data->pos])
 		&& !is_quote(data->line[data->pos])
 		&& !is_operator(data->line[data->pos]))
 	{
