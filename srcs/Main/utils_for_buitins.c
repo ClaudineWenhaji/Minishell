@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 13:59:37 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/04/02 11:21:13 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/13 16:15:08 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,12 @@ static int	exec_simple_builtin(t_command_ast *cmd, t_minishell_data **data)
 	if (ft_strcmp(cmd->command, "pwd") == 0)
 		return (ft_pwd(), 1);
 	if (ft_strcmp(cmd->command, "exit") == 0)
-		return (ft_exit(data), 1);
+		//return (ft_exit(data), 1);
+		return (g_status = 0, 2);
+	if (ft_strcmp(cmd->command, ":") == 0)
+		return (g_status = 0, 1);
+	if (ft_strcmp(cmd->command, "!") == 0)
+		return (g_status = 1, 1);
 	return (0);
 }
 
@@ -81,6 +86,13 @@ static int	ft_cd_builtin(t_command_ast *cmd, t_minishell_data **data)
 
 int	exec_builtin(t_command_ast *cmd, t_minishell_data **data)
 {
+	int	ret;
+	
+	ret = 0;
+	if (!cmd || !cmd->command)
+		return (0);
+	if (ret == 2)
+		return (2);
 	if (exec_simple_builtin(cmd, data)
 		|| ft_export_builtin(cmd, data)
 		|| ft_unset_builtin(cmd, data)

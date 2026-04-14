@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:03:34 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/04/07 16:13:38 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/13 16:20:23 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,104 +27,6 @@ void	handle_signal(int sig)
 		g_status = 0;
 }
 
-/*static int	check_syntax(const char *line)
-{
-	int	i;
-
-	i = 0;
-    if (!line)
-	{
-		return (1);
-	}
-
-	if (line[0] == '|' && line[1] == '|')
-		return (printf("minishell: syntax error near unexpected token `||'\n"), g_status = 2, 0);
-    if (line[0] == '|')
-        return (printf("minishell: syntax error near unexpected token `|'\n"), g_status = 2, 0);
-    while (line[i])
-    {
-        if (line[i] == '|')
-		{
-            if (line[i+1] && line[i+1] == '|')
-                return (printf("minishell: syntax error near unexpected token `|'\n"), g_status = 2, 0);
-            if (!line[i+1])
-                return (printf("minishell: syntax error near unexpected token `|'\n"), g_status = 2, 0);
-        }
-        i++;
-    }
-    return (1);
-}*/
-
-static int	check_syntax(const char *line)
-{
-	int	i;
-	int	j;
-
-	if (!line)
-		return (1);
-
-	i = 0;
-	if (line[0] == '|' && line[1] == '|')
-	{
-		printf("minishell: syntax error near unexpected token `||'\n");
-		g_status = 2;
-		return (0);
-	}
-	if (line[0] == '|')
-	{
-		printf("minishell: syntax error near unexpected token `|'\n");
-		g_status = 2;
-		return (0);
-	}
-
-	while (line[i])
-	{
-		if (line[i] == '|')
-		{
-			if (line[i + 1] && line[i + 1] == '|')
-			{
-				printf("minishell: syntax error near unexpected token `|'\n");
-				g_status = 2;
-				return (0);
-			}
-			if (!line[i + 1])
-			{
-				printf("minishell: syntax error near unexpected token `|'\n");
-				g_status = 2;
-				return (0);
-			}
-		}
-		if (line[i] == '<' || line[i] == '>')
-		{
-			// skip << ou >>
-			if ((line[i] == '<' && line[i + 1] == '<')
-				|| (line[i] == '>' && line[i + 1] == '>'))
-				i++;
-
-			j = i + 1;
-
-			// skip espaces
-			while (line[j] && (line[j] == ' ' || line[j] == '\t'))
-				j++;
-			if (!line[j])
-			{
-				printf("minishell: syntax error near unexpected token `newline'\n");
-				g_status = 2;
-				return (0);
-			}
-			if (line[j] == '|' || line[j] == '<' || line[j] == '>')
-			{
-				printf("minishell: syntax error near unexpected token `%c'\n", line[j]);
-				g_status = 2;
-				return (0);
-			}
-		}
-
-		i++;
-	}
-	return (1);
-}
-
 static void	lp_read_loop(t_minishell_data **data)
 {
 	char	*line;
@@ -133,7 +35,7 @@ static void	lp_read_loop(t_minishell_data **data)
 	{
 		if (isatty(STDIN_FILENO))
 			line = readline("minishell> ");
-		else if (isatty(STDIN_FILENO) == 0)
+		else
 			line = readline(NULL);
 		if (!line)
 		{
@@ -141,13 +43,14 @@ static void	lp_read_loop(t_minishell_data **data)
 			return ;
 		}
 		add_history(line);
-		if (!check_syntax(line))
-		{
-			free(line);
-			continue ;
-		}
 		(*data)->tokens = lexer(line, (*data)->envs);
+		expander_tokens((*data)->tokens, (*data)->envs);
 		(*data)->cmds = parser((*data)->tokens);
+		if (!(*data)->cmds && (*data)->tokens)
+			g_status = 2;
+		if ((*data)->cmds && (*data)->cmds->command
+			&& ft_strcmp((*data)->cmds->command, "exit") == 0)
+			ft_exit(data);
 		execute_pipeline((*data)->cmds, data);
 		ft_free_command(&(*data)->cmds);
 		free_tokens(&(*data)->tokens);
@@ -167,9 +70,7 @@ int	main(int argc, char **argv, char **envp)
 	data = (t_minishell_data *)malloc(sizeof(t_minishell_data));
 	if (!data)
 		return (EXIT_FAILURE);
-	data->envs = NULL;
-	data->execdirs = NULL;
-	data->tokens = NULL;
+	(data->envs = NULL, data->execdirs = NULL, data->tokens = NULL);
 	data->cmds = NULL;
 	i = -1;
 	while (envp[++i])

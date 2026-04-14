@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 04:51:52 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/04/01 14:37:43 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/13 11:30:08 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,17 @@ static int	ft_addredir(t_redir_file **head, t_token_type type, char *file)
 		return (0);
 	node->next = NULL;
 	node->type = type;
-	node->expand = 1;
-	node->file = ft_strdup(file);
+	node->heredoc_fd = -1;
+	if (type == HEREDOC)
+	{
+		node->quoted = has_quotes(file);
+		node->file = remove_quotes(file);
+	}
+	else
+	{
+		node->quoted = 0;
+		node->file = ft_strdup(file);
+	}
 	if (!node->file)
 		return (free(node), 0);
 	if (!*head)
@@ -56,9 +65,6 @@ static int	ft_addredir(t_redir_file **head, t_token_type type, char *file)
 
 int	get_command_param(t_command_ast *command, t_token **curr_token)
 {
-        char *clean;
-        int expand;
-
 	if (!(*curr_token))
 		return (1);
 	else if ((*curr_token)->type == PIPE && (*curr_token)->next)
@@ -68,33 +74,12 @@ int	get_command_param(t_command_ast *command, t_token **curr_token)
 		if (!affect_command_param(command, *curr_token))
 			return (0);
 	}
-	/*else if (is_type_redir(*curr_token) && (*curr_token)->next)
+	else if (is_type_redir(*curr_token) && (*curr_token)->next)
 	{
 		if ((*curr_token)->next->type != WORD || !ft_addredir(&command->redirs,
 				(*curr_token)->type, (*curr_token)->next->value))
 			return (0);
 		*curr_token = (*curr_token)->next;
-	}*/
-	else if (is_type_redir(*curr_token) && (*curr_token)->next)
-	{
-		t_token *next = (*curr_token)->next;
-		if (next->type != WORD)
-			return (0);
-		if ((*curr_token)->type == HEREDOC)
-		{
-			expand = !is_quoted(next->value);
-			clean = remove_quotes(next->value);
-			if (!ft_addredir_heredoc(&command->redirs, clean, expand))
-				return (free(clean), 0);
-			free(clean);
-		}
-		else
-		{
-			if (!ft_addredir(&command->redirs,
-						(*curr_token)->type, next->value))
-				return (0);
-		}
-		*curr_token = next;
 	}
 	else
 		return (0);
@@ -132,11 +117,25 @@ static t_command_ast	*get_commands(t_token *tokens)
 t_command_ast	*parser(t_token *tokens)
 {
 	t_command_ast	*cmds;
+	t_command_ast	*node;
 
 	if (!tokens)
 		return (NULL);
 	cmds = get_commands(tokens);
 	if (!cmds)
-		return (printf("error: parsing fail.\n"), NULL);
+	{
+		if (tokens && tokens->type == PIPE)
+			ft_putstr_fd("Minishell: syntax error near unexpected token `|'\n", 2);
+		else
+			ft_putstr_fd("Minishell: syntax error near unexpected token `newline'\n", 2);
+		return (NULL);
+	}
+	node = cmds;
+	while (node)
+	{
+		if (!get_matched_args(node))
+			return (ft_free_command(&cmds), NULL);
+		node = node->next;
+	}
 	return (cmds);
 }

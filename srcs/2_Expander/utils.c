@@ -5,46 +5,39 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/05 15:45:59 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/04/13 16:31:46 by clwenhaj         ###   ########.fr       */
+/*   Created: 2026/04/08 02:00:00 by clwenhaj          #+#    #+#             */
+/*   Updated: 2026/04/13 15:13:06 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	quit_error(char *msg)
+void	clean_quotes_command(t_command_ast *cmd)
 {
-	write(2, msg, ft_strlen(msg));
-	return (1);
-}
+	t_list			*arg_node;
+	t_redir_file	*redir_node;
+	char			*tmp;
 
-void	ft_free(void **nptr)
-{
-	free(*nptr);
-	*nptr = NULL;
-}
-
-void	ft_free_table(char ***table, int len)
-{
-	int	i;
-
-	if (!table || !*table)
-		return ;
-	i = 0;
-	while (i < len)
+	if (cmd->command)
 	{
-		if ((*table)[i])
-			free((*table)[i]);
-		i++;
+		tmp = remove_quotes(cmd->command);
+		(free(cmd->command), cmd->command = tmp);
 	}
-	free(*table);
-	*table = NULL;
-}
-
-void	handle_fork_signal(int sig)
-{
-	if (sig == SIGINT)
-		printf("\n");
-	else if (sig == SIGQUIT)
-		printf("\n");
+	arg_node = cmd->args;
+	while (arg_node)
+	{
+		tmp = remove_quotes((char *)arg_node->content);
+		(free(arg_node->content), arg_node->content = tmp);
+		arg_node = arg_node->next;
+	}
+	redir_node = cmd->redirs;
+	while (redir_node)
+	{
+		if (redir_node->file)
+		{
+			tmp = remove_quotes(redir_node->file);
+			(free(redir_node->file), redir_node->file = tmp);
+		}
+		redir_node = redir_node->next;
+	}
 }
