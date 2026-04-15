@@ -73,9 +73,9 @@ static int	ft_cd_builtin(t_command_ast *cmd, t_minishell_data **data)
 {
 	char	*arg;
 
+	arg = NULL;
 	if (ft_strcmp(cmd->command, "cd") == 0)
 	{
-		arg = NULL;
 		if (cmd->args)
 			arg = (char *)cmd->args->content;
 		ft_cd(arg, (*data)->envs);

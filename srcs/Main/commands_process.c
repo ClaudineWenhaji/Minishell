@@ -24,15 +24,27 @@ static void	dup2_close(int fd_in, t_command_ast *cmd, int pipfd_in,
 {
 	if (fd_in != STDIN_FILENO)
 	{
-		dup2(fd_in, STDIN_FILENO);
+		if (dup2(fd_in, STDIN_FILENO) == -1)
+			perror("dup2");
 		close(fd_in);
 	}
 	if (cmd->next)
 	{
-		close(pipfd_in);
-		if (dup2(pipfd_out, STDOUT_FILENO) == -1)
-			perror("dup2");
-		close(pipfd_out);
+		if (pipfd_in != -1)
+			close(pipfd_in);
+		if (pipfd_out != -1)
+		{
+			if (dup2(pipfd_out, STDOUT_FILENO) == -1)
+				perror("dup2");
+			close(pipfd_out);
+		}
+	}
+	else
+	{
+		if (pipfd_in != -1)
+			close(pipfd_in);
+		if (pipfd_out != -1)
+			close(pipfd_out);
 	}
 }
 
@@ -131,8 +143,11 @@ void	execute_pipeline(t_command_ast *cmds, t_minishell_data **data)
 	if (init_bf_execute(cmds, &cmd, &pids, &fd_in) == -1)
 		return ;
 	i = -1;
+	fd_in = STDIN_FILENO;
 	while (cmd)
 	{
+		pipefd[0] = -1;
+		pipefd[1] = -1;
 		if (cmd->next && !set_pipe(pipefd))
 		{
 			if (fd_in != STDIN_FILENO)
@@ -163,3 +178,21 @@ void	execute_pipeline(t_command_ast *cmds, t_minishell_data **data)
 	(ft_wait_child(cmds, pids), free(pids), signal(SIGINT, handle_signal),
 	 signal(SIGQUIT, handle_signal));
 }
+
+/*
+void execute_conditional(t_command_ast *cmds, t_minishell_data **data)
+{
+    t_command_ast *cmd = cmds;
+
+    while (cmd)
+    {
+        execute_pipeline(cmd, data); 
+        if (!cmd->next)
+            break;
+        if (cmd->type == CMD_AND && g_status != 0)
+            break;
+        if (cmd->type == CMD_OR && g_status == 0)
+            break;
+        cmd = cmd->next;
+    }
+}*/

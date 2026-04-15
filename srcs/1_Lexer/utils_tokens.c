@@ -34,6 +34,16 @@ t_token_type	get_operator_type(t_data *data)
 
 	c = data->line[data->pos];
 	next = data->line[data->pos + 1];
+	/*if (c == '|' && next == '|')
+	{
+		data->pos++;
+		return (OR_IF);
+	}
+	if (c == '&' && next == '&')
+	{
+		data->pos++;
+		return (AND_IF);
+	}*/
 	if (c == '|')
 		return (PIPE);
 	if (c == '>' && next && next == '>')
@@ -87,6 +97,10 @@ void	print_tokens(t_token *tokens)
 			printf(" | VALUE: >>");
 		else if (tokens->type == HEREDOC)
 			printf(" | VALUE: <<");
+		//else if (tokens->type == AND_IF)
+		//	printf(" | VALUE: &&");
+		//else if (tokens->type == OR_IF)
+		//	printf(" | VALUE: ||");
 		printf("\n");
 		tokens = tokens->next;
 	}

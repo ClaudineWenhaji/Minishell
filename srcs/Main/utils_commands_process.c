@@ -143,7 +143,8 @@ void	fork_parent_do(int *fd_in, t_command_ast *command, int pipefd_in,
 		close(*fd_in);
 	if (command->next)
 	{
-		close(pipefd_out);
+		if (pipefd_out != -1)
+			close(pipefd_out);
 		*fd_in = pipefd_in;
 	}
 	else

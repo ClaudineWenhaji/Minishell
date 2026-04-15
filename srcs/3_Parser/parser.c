@@ -23,6 +23,7 @@ static t_command_ast	*init_command(void)
 	command->command = NULL;
 	command->args = NULL;
 	command->redirs = NULL;
+	//command->type = CMD_SIMPLE;
 	return (command);
 }
 
@@ -114,6 +115,20 @@ static t_command_ast	*get_commands(t_token *tokens)
 	return (ft_free_command(&cmds), NULL);
 }
 
+/*static int	is_conditional_operator(t_token *tok)
+{
+	return (tok->type == AND_IF || tok->type == OR_IF);
+}
+
+static t_cmd_type	token_to_cmd_type(t_token *tok)
+{
+	if (tok->type == AND_IF)
+		return (CMD_AND);
+	else if (tok->type == OR_IF)
+		return (CMD_OR);
+	return (CMD_SIMPLE);
+}*/
+
 t_command_ast	*parser(t_token *tokens)
 {
 	t_command_ast	*cmds;
@@ -139,3 +154,44 @@ t_command_ast	*parser(t_token *tokens)
 	}
 	return (cmds);
 }
+
+/*t_command_ast *parser(t_token *tokens)
+{
+    t_command_ast *head = NULL;
+    t_command_ast *current = NULL;
+    t_token *tok = tokens;
+
+    while (tok)
+    {
+        if (!head)
+        {
+            head = init_command();
+            current = head;
+        }
+        else if (tok->type == PIPE)
+        {
+            current->next = init_command();
+            current = current->next;
+            tok = tok->next;
+            continue;
+        }
+        else if (is_conditional_operator(tok))
+        {
+            current->type = token_to_cmd_type(tok);
+            current->next = init_command();
+            current = current->next;
+            tok = tok->next;
+            continue;
+        }
+
+        if (!affect_command_param(current, tok))
+        {
+            ft_free_command(&head);
+            return NULL;
+        }
+
+        tok = tok->next;
+    }
+
+    return head;
+}*/

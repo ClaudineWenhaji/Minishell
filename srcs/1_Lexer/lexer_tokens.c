@@ -66,8 +66,6 @@ static int	lexer_loop(t_data *data, t_token **tokens)
 			if (!word)
 				return (free_tokens(tokens), 0);
 			(add_token(tokens, new_token(WORD, word)), free(word));
-			//if (!add_token(tokens, new_token(WORD, word)))
-			//	return (free(word), free_tokens(tokens), 0);
 		}
 	}
 	return (1);

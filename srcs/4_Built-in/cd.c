@@ -35,13 +35,13 @@ static void	update_cd_env(t_env_var *envp, char *oldpwd)
 
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
-		perror("getcwd");
-	else
 	{
-		update_env(envp, "OLDPWD", oldpwd);
-		update_env(envp, "PWD", pwd);
-		free(pwd);
+		perror("getcwd");
+		return ;
 	}
+	update_env(envp, "OLDPWD", oldpwd);
+	update_env(envp, "PWD", pwd);
+	free(pwd);
 }
 
 void	ft_cd(char *args, t_env_var *envp)
@@ -50,7 +50,7 @@ void	ft_cd(char *args, t_env_var *envp)
 
 	if (!args)
 	{
-		printf("cd: missing arguments\n");
+		ft_putstr_fd("cd: missing arguments\n", 2);
 		return ;
 	}
 	oldpwd = getcwd(NULL, 0);

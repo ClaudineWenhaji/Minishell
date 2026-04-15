@@ -61,12 +61,20 @@ typedef struct s_redir_file
 	int					quoted;
 }	t_redir_file;
 
+/*typedef enum	e_cmd_type
+{
+	CMD_SIMPLE,
+	CMD_AND,
+	CMD_OR,
+}	t_cmd_type;*/
+
 typedef struct s_command_ast
 {
 	struct s_command_ast	*next;
 	char					*command;
 	t_list					*args;
 	t_redir_file			*redirs;
+//	t_cmd_type				type;
 }	t_command_ast;
 
 typedef struct s_data
@@ -84,6 +92,7 @@ typedef struct s_minishell_data
 	t_list			*execdirs;
 }	t_minishell_data;
 
+//void			init_env_vars(t_env_var **envs);
 int				quit_error(char *msg);
 t_token_type	get_operator_type(t_data *data);
 t_token			*new_token(t_token_type type, char *value);
@@ -112,6 +121,7 @@ void			fork_child_do(t_command_ast *command, t_minishell_data **data);
 void			fork_parent_do(int *fd_in, t_command_ast *command,
 					int pipefd_in, int pipefd_out);
 void			execute_pipeline(t_command_ast *cmds, t_minishell_data **data);
+//void			execute_conditional(t_command_ast *cmds, t_minishell_data **data);
 int				is_operator(char c);
 int				is_quote(char c);
 int				ft_isspace(char c);

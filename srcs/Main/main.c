@@ -52,6 +52,7 @@ static void	lp_read_loop(t_minishell_data **data)
 			&& ft_strcmp((*data)->cmds->command, "exit") == 0)
 			ft_exit(data);
 		execute_pipeline((*data)->cmds, data);
+		//execute_conditional((*data)->cmds, data);
 		ft_free_command(&(*data)->cmds);
 		free_tokens(&(*data)->tokens);
 		free(line);
