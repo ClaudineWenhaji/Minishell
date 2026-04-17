@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 23:18:10 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/04/13 16:29:31 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/17 14:06:13 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ static char	**get_args(t_command_ast *command, t_minishell_data **data,
 
 	access_link = get_link_to_file(command->command, (*data)->execdirs);
 	if (!access_link)
-		return (ft_putstr_fd("Minishell: ", 2), ft_putstr_fd(command->command, 2),
+		return (ft_putstr_fd("Minishell: ", 2),
+			ft_putstr_fd(command->command, 2),
 			ft_putstr_fd(": command not found\n", 2), NULL);
 	i = 0;
 	*len = ft_lstsize(command->args);
@@ -85,6 +86,8 @@ int	check_built_parent(t_command_ast *cmd, t_minishell_data **data)
 			"unset") != 0 && ft_strcmp(cmd->command, "exit") != 0
 		&& ft_strcmp(cmd->command, "cd") != 0)
 		return (0);
+	if (ft_strcmp(cmd->command, "exit") == 0)
+		exec_builtin(cmd, data);
 	stdin_save = dup(STDIN_FILENO);
 	stdout_save = dup(STDOUT_FILENO);
 	if (!apply_redirections(cmd->redirs))
@@ -102,7 +105,7 @@ int	check_built_parent(t_command_ast *cmd, t_minishell_data **data)
 	close(stdin_save);
 	close(stdout_save);
 	if (ret == 2)
-		ft_exit(data);
+		ft_exit(cmd, data);
 	return (1);
 }
 

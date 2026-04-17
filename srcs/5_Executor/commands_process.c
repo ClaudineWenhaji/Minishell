@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 23:49:38 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/04/13 16:18:40 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/17 14:02:04 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,31 +48,35 @@ static void	dup2_close(int fd_in, t_command_ast *cmd, int pipfd_in,
 	}
 }
 
+static void	update_status(int status)
+{
+	if (WIFEXITED(status))
+		g_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		g_status = 128 + WTERMSIG(status);
+		if (g_status == 131)
+			ft_putstr_fd("Quit (core dumped)\n", 2);
+		else if (g_status == 130)
+			ft_putstr_fd("\n", 2);
+	}
+}
+
 static void	ft_wait_child(t_command_ast *cmd, pid_t *pids)
 {
 	t_command_ast	*node;
 	int				status;
 	int				i;
 
-	(node = cmd, i = 0);
+	node = cmd;
+	i = 0;
 	if (!pids)
 		return ;
 	while (node)
 	{
 		waitpid(pids[i++], &status, 0);
 		if (!node->next)
-		{
-			if (WIFEXITED(status))
-				g_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-			{
-				g_status = 128 + WTERMSIG(status);
-				if (g_status == 131)
-					ft_putstr_fd("Quit (core dumped)\n", 2);
-				else if (g_status == 130)
-					ft_putstr_fd("\n", 2);
-			}
-		}
+			update_status(status);
 		node = node->next;
 	}
 }
@@ -83,7 +87,10 @@ static int	init_bf_execute(t_command_ast *cmds, t_command_ast **cmd,
 	t_command_ast	*node;
 	int				i;
 
-	(node = cmds, *cmd = cmds, *fd_in = STDIN_FILENO, i = 0);
+	node = cmds;
+	*cmd = cmds;
+	*fd_in = STDIN_FILENO;
+	i = 0;
 	while (node)
 	{
 		if (cmds->next)
@@ -116,7 +123,8 @@ static int	prepare_heredoc(t_command_ast *cmds, t_env_var *envs)
 		{
 			if (redir->type == HEREDOC)
 			{
-				redir->heredoc_fd = handle_heredoc(redir->file, redir->quoted, envs);
+				redir->heredoc_fd = handle_heredoc(redir->file,
+						redir->quoted, envs);
 				if (redir->heredoc_fd < 0)
 					return (g_status = 130, 0);
 			}
@@ -175,24 +183,8 @@ void	execute_pipeline(t_command_ast *cmds, t_minishell_data **data)
 			fork_parent_do(&fd_in, cmd, pipefd[0], pipefd[1]);
 		cmd = cmd->next;
 	}
-	(ft_wait_child(cmds, pids), free(pids), signal(SIGINT, handle_signal),
-	 signal(SIGQUIT, handle_signal));
+	ft_wait_child(cmds, pids);
+	free(pids);
+	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, handle_signal);
 }
-
-/*
-void execute_conditional(t_command_ast *cmds, t_minishell_data **data)
-{
-    t_command_ast *cmd = cmds;
-
-    while (cmd)
-    {
-        execute_pipeline(cmd, data); 
-        if (!cmd->next)
-            break;
-        if (cmd->type == CMD_AND && g_status != 0)
-            break;
-        if (cmd->type == CMD_OR && g_status == 0)
-            break;
-        cmd = cmd->next;
-    }
-}*/

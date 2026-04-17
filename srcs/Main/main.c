@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:03:34 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/04/13 16:20:23 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/17 14:05:14 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,7 @@ static void	lp_read_loop(t_minishell_data **data)
 		(*data)->cmds = parser((*data)->tokens);
 		if (!(*data)->cmds && (*data)->tokens)
 			g_status = 2;
-		if ((*data)->cmds && (*data)->cmds->command
-			&& ft_strcmp((*data)->cmds->command, "exit") == 0)
-			ft_exit(data);
 		execute_pipeline((*data)->cmds, data);
-		//execute_conditional((*data)->cmds, data);
 		ft_free_command(&(*data)->cmds);
 		free_tokens(&(*data)->tokens);
 		free(line);
@@ -71,7 +67,9 @@ int	main(int argc, char **argv, char **envp)
 	data = (t_minishell_data *)malloc(sizeof(t_minishell_data));
 	if (!data)
 		return (EXIT_FAILURE);
-	(data->envs = NULL, data->execdirs = NULL, data->tokens = NULL);
+	data->envs = NULL;
+	data->execdirs = NULL;
+	data->tokens = NULL;
 	data->cmds = NULL;
 	i = -1;
 	while (envp[++i])
