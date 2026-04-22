@@ -1,15 +1,15 @@
 NAME            = minishell
 CC              = cc
-CFLAGS          = -Wall -Wextra -Werror -Iincludes -Ilibft -Isrcs/4_Built-in
+CFLAGS          = -Wall -Wextra -Werror -Iincludes -Ilibft -Isrcs/5_Builtins
 LDFLAGS         = -Llibft -lft -lreadline
 
-SRCS            = $(shell find ./srcs -name "*.c" | grep -v "4_Built-in")
+SRCS            = $(shell find ./srcs -name "*.c" | grep -v "5_Builtins")
 OBJS            = $(SRCS:%.c=%.o)
 INC_DIR         = includes
 LIBFT_DIR       = libft
 LIBFT           = $(LIBFT_DIR)/libft.a
 
-BUILTIN_DIR     = srcs/4_Built-in
+BUILTIN_DIR     = srcs/5_Builtins
 BUILTIN_LIB     = $(BUILTIN_DIR)/builtin.a
 
 GREEN           = \033[0;32m
@@ -57,7 +57,7 @@ gdb: CFLAGS += -g3
 gdb: re
 
 test: re
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes -s ./minishell
+	valgrind --suppressions=readline.supp --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes -s ./minishell
 
 
 .PHONY: all clean fclean re

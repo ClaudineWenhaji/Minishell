@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 16:37:39 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/04/02 12:05:38 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/20 12:45:05 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	is_n_options(char *arg)
 	return (1);
 }
 
-void	ft_echo(t_list *args)
+int	ft_echo(t_list *args)
 {
 	int	flag_newline;
 
@@ -49,5 +49,5 @@ void	ft_echo(t_list *args)
 	}
 	if (flag_newline)
 		printf("\n");
-	g_status = 0;
+	return (0);
 }

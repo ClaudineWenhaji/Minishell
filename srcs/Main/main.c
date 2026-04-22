@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:03:34 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/04/17 14:05:14 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/20 13:26:33 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ static void	lp_read_loop(t_minishell_data **data)
 		(*data)->cmds = parser((*data)->tokens);
 		if (!(*data)->cmds && (*data)->tokens)
 			g_status = 2;
-		execute_pipeline((*data)->cmds, data);
+		else
+			execute_pipeline((*data)->cmds, data);
 		ft_free_command(&(*data)->cmds);
 		free_tokens(&(*data)->tokens);
 		free(line);

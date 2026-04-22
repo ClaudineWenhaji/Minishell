@@ -1,21 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/30 00:42:55 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/04/01 14:41:47 by clwenhaj         ###   ########.fr       */
+/*   Created: 2026/03/18 13:28:04 by vnaoussi          #+#    #+#             */
+/*   Updated: 2026/04/20 13:14:17 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-int	ft_check_builtin_must_not_fork(char *command)
+int	ft_env(t_env_var *envs)
 {
-	if (ft_strcmp(command, "unset") == 0 || ft_strcmp(command, "export") == 0
-		|| ft_strcmp(command, "exit") == 0)
-		return (1);
+	t_env_var	*node;
+
+	node = envs;
+	while (node)
+	{
+		if (node->value)
+		{
+			printf("%s=", node->key);
+			printf("'%s'\n", node->value);
+		}
+		node = node->next;
+	}
 	return (0);
 }

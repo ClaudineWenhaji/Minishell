@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 15:00:00 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/25 15:00:00 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/17 13:00:26 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	is_operator(char c)
 {
-	return (c == '|' || c == '<' || c == '>');
+	return (c == '|' || c == '<' || c == '>' || c == '&');
 }
 
 int	is_quote(char c)

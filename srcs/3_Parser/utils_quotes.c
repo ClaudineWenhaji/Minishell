@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   utils_quotes.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vnaoussi <vnaoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/18 13:28:04 by vnaoussi          #+#    #+#             */
-/*   Updated: 2026/03/18 14:10:51 by vnaoussi         ###   ########.fr       */
+/*   Created: 2026/04/19 12:00:00 by vnaoussi          #+#    #+#             */
+/*   Updated: 2026/04/21 13:52:10 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin.h"
+#include "minishell.h"
 
-void	ft_env(t_env_var *envs)
+char	*remove_quotes(char *str)
 {
-	t_env_var	*node;
+	char	*res;
+	char	quote[2];
 
-	node = envs;
-	while (node)
-	{
-		if (node->value)
-		{
-			printf("%s=", node->key);
-			printf("'%s'\n", node->value);
-		}
-		node = node->next;
-	}
+	if (!str)
+		return (NULL);
+	quote[0] = 0;
+	quote[1] = 0;
+	if (str[0] == '"' || str[0] == '\'')
+		quote[0] = str[0];
+	if (quote[0])
+		res = ft_strtrim(str, quote);
+	else
+		res = ft_strdup(str);
+	return (res);
 }

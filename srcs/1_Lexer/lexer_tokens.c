@@ -6,11 +6,16 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 15:54:24 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/04/17 14:27:47 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/21 15:43:29 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	affect_status(int *status, int s)
+{
+	*status = s;
+}
 
 static char	*read_word(t_data *data)
 {
@@ -31,7 +36,8 @@ static char	*read_word(t_data *data)
 			if (data->line[data->pos] == quote)
 				buffer[buf_pos++] = data->line[data->pos++];
 			else
-				return (ft_putstr_fd("Minishell: unclosed quote\n", 2), NULL);
+				return (affect_status(&g_status, 1),
+					ft_putstr_fd("Minishell: unclosed quote\n", 2), NULL);
 		}
 		else
 			buffer[buf_pos++] = data->line[data->pos++];
@@ -40,29 +46,34 @@ static char	*read_word(t_data *data)
 	return (ft_strdup(buffer));
 }
 
-static void	handle_operator(t_data *data, t_token **tokens, t_token_type type)
+static char	*get_token_value(t_token_type type)
 {
-	add_token(tokens, new_token(type, NULL));
-	if (type == APPEND || type == HEREDOC)
-		data->pos += 2;
-	else
-		data->pos++;
-}
-
-static int	handle_word(t_data *data, t_token **tokens)
-{
-	char	*word;
-
-	word = read_word(data);
-	if (!word)
-		return (free_tokens(tokens), 0);
-	add_token(tokens, new_token(WORD, word));
-	free(word);
-	return (1);
+	if (type == PIPE)
+		return (ft_strdup("|"));
+	if (type == REDIR_IN)
+		return (ft_strdup("<"));
+	if (type == REDIR_OUT)
+		return (ft_strdup(">"));
+	if (type == APPEND)
+		return (ft_strdup(">>"));
+	if (type == HEREDOC)
+		return (ft_strdup("<<"));
+	if (type == SEMICOLON)
+		return (ft_strdup(";"));
+	if (type == AND)
+		return (ft_strdup("&"));
+	if (type == AND_IF)
+		return (ft_strdup("&&"));
+	if (type == OR_IF)
+		return (ft_strdup("||"));
+	if (type == NOT)
+		return (ft_strdup("!"));
+	return (NULL);
 }
 
 static int	lexer_loop(t_data *data, t_token **tokens)
 {
+	char			*word;
 	t_token_type	type;
 
 	while (data->line[data->pos])
@@ -73,12 +84,15 @@ static int	lexer_loop(t_data *data, t_token **tokens)
 			break ;
 		type = get_operator_type(data);
 		if (type != WORD)
-			handle_operator(data, tokens, type);
+			word = get_token_value(type);
 		else
-		{
-			if (!handle_word(data, tokens))
-				return (0);
-		}
+			word = read_word(data);
+		if (!word)
+			return (affect_status(&g_status, 1), free_tokens(tokens), 0);
+		add_token(tokens, new_token(type, word));
+		free(word);
+		if (type != WORD)
+			data->pos++;
 	}
 	return (1);
 }

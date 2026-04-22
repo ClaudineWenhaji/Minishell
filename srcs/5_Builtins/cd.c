@@ -6,7 +6,7 @@
 /*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 11:35:09 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/03/23 19:07:56 by clwenhaj         ###   ########.fr       */
+/*   Updated: 2026/04/20 12:50:44 by clwenhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_env_var	*update_env(t_env_var *env, char *key, char *value)
 	return (new);
 }
 
-void	ft_cd(char *args, t_env_var *envp)
+int	ft_cd(char *args, t_env_var *envp)
 {
 	char	*oldpwd;
 	char	*pwd;
@@ -48,37 +48,18 @@ void	ft_cd(char *args, t_env_var *envp)
 	{
 		home = getenv("HOME");
 		if (!home)
-		{
-			g_status = 1;
-			return ;
-		}
+			return (1);
 		args = home;
 	}
 	oldpwd = getcwd(NULL, 0);
 	if (!oldpwd)
-	{
-		perror("getcwd");
-		g_status = 1;
-		return ;
-	}
+		return (perror("getcwd"), 1);
 	if (chdir(args) != 0)
-	{
-		perror("cd");
-		free(oldpwd);
-		g_status = 1;
-		return ;
-	}
+		return (perror("cd"), free(oldpwd), 1);
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
-	{
-		perror("getcwd");
-		free(oldpwd);
-		g_status = 1;
-		return ;
-	}
+		return (perror("getcwd"), free(oldpwd), 1);
 	envp = update_env(envp, "PWD", pwd);
 	envp = update_env(envp, "OLDPWD", oldpwd);
-	free(oldpwd);
-	free(pwd);
-	g_status = 0;
+	return (free(oldpwd), free(pwd), 0);
 }
