@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork_child.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clwenhaj <clwenhaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vnaoussi <vnaoussi@learner.42.tech>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/22 11:46:36 by clwenhaj          #+#    #+#             */
-/*   Updated: 2026/04/22 16:36:59 by clwenhaj         ###   ########.fr       */
+/*   Created: 2026/04/24 13:09:01 by vnaoussi          #+#    #+#             */
+/*   Updated: 2026/04/24 13:11:00 by vnaoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static void	handle_no_args(t_command_ast *command, t_minishell_data **data)
 	exit(len);
 }
 
-void	fork_child_do(t_command_ast *command, t_minishell_data **data)
+void	fork_child_do(t_command_ast *command, t_minishell_data **data, int pid)
 {
 	char	**args;
 	char	**envp;
@@ -88,10 +88,10 @@ void	fork_child_do(t_command_ast *command, t_minishell_data **data)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	if (!apply_redirections(command->redirs))
-		return (ft_clean_all(data), exit(EXIT_FAILURE));
+		(ft_clean_all(data), exit(EXIT_FAILURE));
 	if (!command->command)
-		return (ft_clean_all(data), exit(EXIT_SUCCESS));
-	if (exec_builtin(command, data))
+		(ft_clean_all(data), exit(EXIT_SUCCESS));
+	if (exec_builtin(command, data, pid))
 		handle_builtin_exit(data);
 	args = get_args(command, data, &len);
 	if (!args)
